@@ -16,7 +16,6 @@ Source:		%{name}-%{cvs}.tar.bz2
 URL:		http://rioutil.sourceforge.net/
 License:	GPL
 Group:		Sound
-BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	libusb-devel
 
 %description
