@@ -1,20 +1,26 @@
-%define name	rioutil
-%define version	1.5.0
-%define cvs 20051012
-%define rel 0.%cvs.1
-%define release %mkrel %rel
+%define svn	54
+%define rel	1
+%if %svn
+%define release		%mkrel 0.%{svn}.%{rel}
+%define distname	%{name}-%{svn}.tar.lzma
+%define dirname		%{name}-1.x
+%else
+%define release		%mkrel %{rel}
+%define distname	%{name}-%{version}.tar.gz
+%define dirname		%{name}-%{version}
+%endif
 
-%define major	1
-%define libname %mklibname %name %major
+%define major		1
+%define libname		%mklibname %{name} %{major}
+%define develname	%mklibname %{name} -d
 
-Name: 	 	%{name}
+Name: 	 	rioutil
 Summary: 	File transfer utility for newer RIO MP3 players
-Version: 	%{version}
+Version: 	1.5.1
 Release: 	%{release}
-
-Source:		%{name}-%{cvs}.tar.bz2
+Source0:	http://downloads.sourceforge.net/%{name}/%{distname}
 URL:		http://rioutil.sourceforge.net/
-License:	GPL
+License:	GPLv2+
 Group:		Sound
 BuildRoot:	%{_tmppath}/%{name}-buildroot
 BuildRequires:	libusb-devel
@@ -22,32 +28,29 @@ BuildRequires:	libusb-devel
 %description
 RioUtil is a utility designed for the use of interfacing with Rio's third,
 fourth, and fifth generations of portable mp3 players:
-Rio 600/800/900/S-Series/Riot/psa[play/Fuse/Chiba/Cali.
+Rio 600/800/900/S-Series/Riot/Nike psa[play/Fuse/Chiba/Cali/Nitrus.
 
 It goes beyond the originally packaged software by providing downloading.
 
 %package -n 	%{libname}
-Summary:        Dynamic libraries from %name
+Summary:        Dynamic libraries from %{name}
 Group:          System/Libraries
-#Provides:	%name
-#Obsoletes:	%name = %version-%release
 
 %description -n %{libname}
-Dynamic libraries from %name.
+Dynamic libraries from %{name}.
 
-%package -n 	%{libname}-devel
-Summary: 	Header files and static libraries from %name
+%package -n 	%{develname}
+Summary: 	Header files and static libraries from %{name}
 Group: 		Development/C
-#Requires: 	%{libname} >= %{version}-%{release}
-Provides: 	lib%{name}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release} 
-Obsoletes: 	%name-devel
+Obsoletes: 	%{name}-devel
+Obsoletes:	%{mklibname rioutil 1 -d}
 
-%description -n %{libname}-devel
-Libraries and includes files for developing programs based on %name.
+%description -n %{develname}
+Libraries and includes files for developing programs based on %{name}.
 
 %prep
-%setup -q -n %name
+%setup -q -n %{dirname}
 ./autogen.sh
 
 %build
@@ -55,11 +58,11 @@ Libraries and includes files for developing programs based on %name.
 %make
 										
 %install
-rm -rf $RPM_BUILD_ROOT
-%makeinstall
+rm -rf %{buildroot}
+%makeinstall_std
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
@@ -71,15 +74,16 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog NEWS TODO README
-%{_bindir}/%name
+%{_bindir}/%{name}
 %{_mandir}/man1/*
 
-#%files -n %{libname}
-#%defattr(-,root,root)
-#%{_libdir}/*.so.%{major}*
+%files -n %{libname}
+%defattr(-,root,root)
+%{_libdir}/*.so.%{major}*
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %{_includedir}/*
-%{_libdir}/*.a
+%{_libdir}/*.*a
+%{_libdir}/*.so
 
