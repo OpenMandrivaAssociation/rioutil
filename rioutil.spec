@@ -51,9 +51,10 @@ Libraries and includes files for developing programs based on %{name}.
 
 %prep
 %setup -q -n %{dirname}
-./autogen.sh
 
 %build
+sed -i -e 's,$(prefix)/lib,%{_libdir},g' Makefile.am librioutil/Makefile.am
+./autogen.sh
 %configure2_5x
 %make
 										
