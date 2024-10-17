@@ -12,7 +12,7 @@ Summary: 	File transfer utility for newer RIO MP3 players
 Version: 	1.5.1
 Release: 	0.%{svn}.4
 Source0:	http://downloads.sourceforge.net/%{name}/%{distname}
-URL:		http://rioutil.sourceforge.net/
+URL:		https://rioutil.sourceforge.net/
 License:	GPLv2+
 Group:		Sound
 BuildRequires:	libusb-devel
